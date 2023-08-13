@@ -1,5 +1,6 @@
 package com.livefront.codechallenge
 
+import android.content.Context
 import androidx.activity.compose.setContent
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -44,7 +45,7 @@ class MainActivityTests {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @OptIn(ExperimentalTestApi::class)
     @Before
@@ -75,20 +76,20 @@ class MainActivityTests {
     }
 
     @Test
-    fun ShouldDisplayLoadedCards() {
+    fun shouldDisplayLoadedCards() {
         composeTestRule.onNodeWithTag(TestTags.CHARACTER_LIST)
             .onChildren()
             .assertCountEquals(2)
     }
 
     @Test
-    fun ShouldBeAbleToClickOnCard() {
+    fun shouldBeAbleToClickOnCard() {
         composeTestRule.onNodeWithText("Superman").performClick()
         composeTestRule.onNodeWithText("Occupation: Reporter").assertExists()
     }
 
     @Test
-    fun ShouldBeAbleToNavigateAwayFromDetailPage() {
+    fun shouldBeAbleToNavigateAwayFromDetailPage() {
         composeTestRule.onNodeWithText("Superman").performClick()
         composeTestRule.onNodeWithText("Occupation: Reporter").assertExists()
         composeTestRule.onNode(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button))
@@ -99,7 +100,7 @@ class MainActivityTests {
     }
 
     @Test
-    fun ShouldBeAbleToUseRandomCharacterButton() {
+    fun shouldBeAbleToUseRandomCharacterButton() {
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(
                 SemanticsProperties.ContentDescription,
@@ -111,7 +112,7 @@ class MainActivityTests {
     }
 
     @Test
-    fun ShouldBeAbleToSearchForACharacter() {
+    fun shouldBeAbleToSearchForACharacter() {
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(
                 SemanticsProperties.ContentDescription,

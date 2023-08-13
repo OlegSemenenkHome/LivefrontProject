@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.livefront.codechallenge.di
 
 import android.app.Application

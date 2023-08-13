@@ -1,6 +1,5 @@
 package com.livefront.codechallenge.presentation.detailscreen
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.livefront.codechallenge.R
+import com.livefront.codechallenge.core.CenteredText
 import com.livefront.codechallenge.core.checkIfUnknown
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,23 +71,8 @@ internal fun CharacterDetailScreen(navController: NavController) {
                     SubcomposeAsyncImage(
                         model = character.images.lg,
                         contentDescription = "An image of ${character.name}",
-                        loading = {
-                            CircularProgressIndicator()
-                        },
-                        error = {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                            ) {
-                                Text(
-                                    fontSize = 20.sp,
-                                    text = "Unable to load image",
-                                    modifier = Modifier
-                                        .padding(horizontal = 20.dp)
-                                )
-                            }
-                        },
+                        loading = { CircularProgressIndicator() },
+                        error = { CenteredText(text = stringResource(id = R.string.load_image_error)) },
                         modifier = Modifier
                             .padding(
                                 horizontal = 10.dp,
@@ -99,7 +84,7 @@ internal fun CharacterDetailScreen(navController: NavController) {
 
                     Text(
                         text = character.name,
-                        fontSize = 26.sp
+                        fontSize = 26.sp,
                     )
 
                     Text(
@@ -120,6 +105,8 @@ internal fun CharacterDetailScreen(navController: NavController) {
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                     )
                 }
+            } else {
+                CenteredText(text = stringResource(id = R.string.load_character_error))
             }
         }
     }

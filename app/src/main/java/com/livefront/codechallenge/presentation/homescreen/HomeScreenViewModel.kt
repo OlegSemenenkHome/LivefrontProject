@@ -21,13 +21,16 @@ private const val VIEWMODEL_LOGTAG = "HOMESCREEN_VIEWMODEL"
 internal class HomeScreenViewModel @Inject constructor(
     private val repo: CharacterRepository
 ) : ViewModel() {
-
-    var loading: Boolean by mutableStateOf(true)
     val characterList = mutableStateListOf<Character>()
 
+    var loading: Boolean by mutableStateOf(true)
+        private set
+
     var filteredCharacters by mutableStateOf(emptyList<Character>())
+        private set
 
     var searchQuery: String by mutableStateOf("")
+        private set
 
     init {
         viewModelScope.launch {
@@ -48,6 +51,7 @@ internal class HomeScreenViewModel @Inject constructor(
         characterList.forEach { character ->
             if (character.name.lowercase().contentEquals(query.lowercase())) return character
         }
+        clearQuery()
         return null
     }
 

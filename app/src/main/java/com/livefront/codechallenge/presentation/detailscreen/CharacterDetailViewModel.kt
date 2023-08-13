@@ -21,6 +21,7 @@ internal class CharacterDetailViewModel @Inject constructor(
     private val detailKey: String = checkNotNull(savedStateHandle["detailKey"])
 
     var character: Character? by mutableStateOf(null)
+        private set
 
     init {
         viewModelScope.launch {

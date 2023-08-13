@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.livefront.codechallenge.R
+import com.livefront.codechallenge.core.CenteredText
 import com.livefront.codechallenge.core.TestTags.CHARACTER_CARD
 import com.livefront.codechallenge.core.TestTags.CHARACTER_LIST
 
@@ -60,6 +61,7 @@ internal fun HomeScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
 
     var active by rememberSaveable { mutableStateOf(false) }
+    val isListEmpty = viewModel.characterList.isEmpty()
 
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondary
@@ -69,14 +71,20 @@ internal fun HomeScreen(navController: NavHostController) {
                 Text(stringResource((R.string.app_name)))
             }, actions = {
                 IconButton(onClick = {
-                    navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+                    if (!isListEmpty) {
+                        navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+                    }
                 }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
                         contentDescription = stringResource(id = R.string.random_icon)
                     )
                 }
-                IconButton(onClick = { active = true }) {
+                IconButton(onClick = {
+                    if (!isListEmpty) {
+                        active = true
+                    }
+                }) {
                     Icon(
                         Icons.Default.Search,
                         contentDescription = stringResource(id = R.string.search_icon)
@@ -91,6 +99,7 @@ internal fun HomeScreen(navController: NavHostController) {
                         viewModel.getCharacter(it)?.let { character ->
                             navController.navigate(route = "detailView/${character.id}")
                         }
+                        active = false
                     },
                     active = true,
                     onActiveChange = { active = it },
@@ -142,28 +151,15 @@ internal fun HomeScreen(navController: NavHostController) {
                                 .height(100.dp)
                         )
                         Text(
-                            text = "Loading Characters",
+                            text = stringResource(id = R.string.loading_character_text),
                             fontSize = 20.sp,
                             modifier = Modifier.padding(top = 20.dp)
                         )
                     }
                 }
-            } else if (viewModel.characterList.isEmpty()) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
-                    Text(
-                        fontSize = 20.sp,
-                        text = stringResource(R.string.unable_to_load_text),
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                    )
-                }
+            } else if (isListEmpty) {
+                CenteredText(text = stringResource(R.string.unable_to_load_text))
             } else {
-
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier
@@ -174,7 +170,6 @@ internal fun HomeScreen(navController: NavHostController) {
                     items(viewModel.characterList) { character ->
                         OutlinedCard(
                             shape = RoundedCornerShape(10),
-                            onClick = { navController.navigate(route = "detailView/${character.id}") },
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = 5.dp
                             ),
@@ -182,6 +177,10 @@ internal fun HomeScreen(navController: NavHostController) {
                                 .wrapContentHeight()
                                 .padding(horizontal = 10.dp)
                                 .testTag(CHARACTER_CARD)
+                                .clickable(
+                                    onClickLabel = stringResource(id = R.string.character_card_click_label) + " " + character.name,
+                                    onClick = { navController.navigate(route = "detailView/${character.id}") }
+                                )
                         ) {
                             ListItem(
                                 leadingContent = {
