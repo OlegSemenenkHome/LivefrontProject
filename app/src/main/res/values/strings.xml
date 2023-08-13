@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Livefront Code Challenge</string>
+
+    //MainScreen
+    <string name="random_icon">Random Character Icon</string>
+    <string name="search_icon">Search Bar Icon</string>
+    <string name="back_arrow_icon_description">Return back to main screen</string>
+    <string name="search_placeholder_text">Look up character</string>
+    <string name="unable_to_load_text">Unable to load characters, please try again at a later time</string>
+</resources>
