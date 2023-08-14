@@ -3,31 +3,10 @@ package com.livefront.codechallenge.data
 data class Character(
     val id: Long,
     val name: String,
-    val slug: String,
-    val powerstats: Powerstats,
-    val appearance: Appearance,
     val biography: Biography,
     val work: Work,
     val connections: Connections,
     val images: Images,
-)
-
-data class Powerstats(
-    val intelligence: Long,
-    val strength: Long,
-    val speed: Long,
-    val durability: Long,
-    val power: Long,
-    val combat: Long,
-)
-
-data class Appearance(
-    val gender: String,
-    val race: String?,
-    val height: List<String>,
-    val weight: List<String>,
-    val eyeColor: String,
-    val hairColor: String,
 )
 
 data class Biography(

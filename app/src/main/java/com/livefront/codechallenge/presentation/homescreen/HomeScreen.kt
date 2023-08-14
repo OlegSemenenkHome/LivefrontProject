@@ -33,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,15 +46,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.livefront.codechallenge.R
 import com.livefront.codechallenge.core.CenteredText
 import com.livefront.codechallenge.core.TestTags.CHARACTER_CARD
 import com.livefront.codechallenge.core.TestTags.CHARACTER_LIST
+import com.livefront.codechallenge.data.Biography
+import com.livefront.codechallenge.data.Character
+import com.livefront.codechallenge.data.Connections
+import com.livefront.codechallenge.data.Images
+import com.livefront.codechallenge.data.Work
+import com.livefront.codechallenge.ui.theme.LivefrontCodeChallengeTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -71,25 +80,21 @@ internal fun HomeScreen(navController: NavHostController) {
                 title = {
                     Text(stringResource((R.string.app_name)))
                 }, actions = {
-                    IconButton(onClick = {
-                        if (!isListEmpty) {
+                    if (!isListEmpty) {
+                        IconButton(onClick = {
                             navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+                        }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
+                                contentDescription = stringResource(id = R.string.random_icon)
+                            )
                         }
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
-                            contentDescription = stringResource(id = R.string.random_icon)
-                        )
-                    }
-                    IconButton(onClick = {
-                        if (!isListEmpty) {
-                            active = true
+                        IconButton(onClick = { active = true }) {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = stringResource(id = R.string.search_icon)
+                            )
                         }
-                    }) {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = stringResource(id = R.string.search_icon)
-                        )
                     }
                 })
             if (active) {
@@ -169,45 +174,78 @@ internal fun HomeScreen(navController: NavHostController) {
                         .testTag(CHARACTER_LIST)
                 ) {
                     items(viewModel.characterList) { character ->
-                        OutlinedCard(
-                            shape = RoundedCornerShape(10),
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = 5.dp
-                            ),
-                            modifier = Modifier
-                                .wrapContentHeight()
-                                .padding(horizontal = 10.dp)
-                                .testTag(CHARACTER_CARD)
-                                .clickable(
-                                    onClickLabel = stringResource(id = R.string.character_card_click_label) + " " + character.name,
-                                    onClick = { navController.navigate(route = "detailView/${character.id}") }
-                                )
-                        ) {
-                            ListItem(
-                                leadingContent = {
-                                    AsyncImage(
-                                        model = character.images.sm,
-                                        contentDescription = "An image of ${character.name}",
-                                        modifier = Modifier
-                                            .size(100.dp)
-                                            .padding(
-                                                start = 10.dp, end = 10.dp
-                                            )
-                                            .clip(CircleShape)
-                                    )
-                                },
-
-                                headlineContent = {
-                                    Text(
-                                        fontSize = 22.sp,
-                                        text = character.name,
-                                    )
-                                },
-                            )
-                        }
+                        CharacterCard(character = character, navController)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CharacterCard(
+    character: Character,
+    navController: NavHostController
+) {
+    OutlinedCard(
+        shape = RoundedCornerShape(10),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 5.dp
+        ),
+        modifier = Modifier
+            .wrapContentHeight()
+            .padding(horizontal = 10.dp)
+            .testTag(CHARACTER_CARD)
+            .clickable(
+                onClickLabel = stringResource(id = R.string.character_card_click_label) + " " + character.name,
+                onClick = { navController.navigate(route = "detailView/${character.id}") }
+            )
+    ) {
+        ListItem(
+            leadingContent = {
+                AsyncImage(
+                    model = character.images.sm,
+                    contentDescription = "An image of ${character.name}",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .padding(
+                            start = 10.dp, end = 10.dp
+                        )
+                        .clip(CircleShape)
+                )
+            },
+
+            headlineContent = {
+                Text(
+                    fontSize = 22.sp,
+                    text = character.name,
+                )
+            },
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CardPreview() {
+    LivefrontCodeChallengeTheme {
+        CharacterCard(
+            character = Character(
+                id = 1,
+                name = "Superman",
+                biography = Biography(
+                    fullName = "",
+                    alterEgos = "",
+                    aliases = listOf(""),
+                    placeOfBirth = "",
+                    firstAppearance = "",
+                    publisher = "",
+                    alignment = ""
+                ),
+                work = Work(occupation = "", base = ""),
+                connections = Connections(groupAffiliation = "", relatives = ""),
+                images = Images(xs = "", sm = "", md = "", lg = "")
+            ), navController = rememberNavController()
+        )
     }
 }

@@ -1,12 +1,10 @@
 package com.livefront.codechallenge.di
 
-import com.livefront.codechallenge.data.Appearance
 import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.CharacterRepository
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
-import com.livefront.codechallenge.data.Powerstats
 import com.livefront.codechallenge.data.Work
 import javax.inject.Singleton
 
@@ -25,23 +23,6 @@ class FakeCharacterRepo : CharacterRepository {
         Character(
             id = 1,
             name = "Superman",
-            slug = "superman",
-            powerstats = Powerstats(
-                intelligence = 94,
-                strength = 100,
-                speed = 96,
-                durability = 100,
-                power = 100,
-                combat = 85
-            ),
-            appearance = Appearance(
-                gender = "Male",
-                race = "Kryptonian",
-                height = listOf("6'3", "191 cm"),
-                weight = listOf("235 lb", "107 kg"),
-                eyeColor = "Blue",
-                hairColor = "Black"
-            ),
             biography = Biography(
                 fullName = "Clark Kent",
                 alterEgos = "Kal-El",
@@ -69,23 +50,6 @@ class FakeCharacterRepo : CharacterRepository {
         Character(
             id = 2,
             name = "Batman",
-            slug = "batman",
-            powerstats = Powerstats(
-                intelligence = 100,
-                strength = 26,
-                speed = 27,
-                durability = 50,
-                power = 47,
-                combat = 100
-            ),
-            appearance = Appearance(
-                gender = "Male",
-                race = "Human",
-                height = listOf("6'2\"", "188 cm"),
-                weight = listOf("210 lb", "95 kg"),
-                eyeColor = "Blue",
-                hairColor = "Black"
-            ),
             biography = Biography(
                 fullName = "Bruce Wayne",
                 alterEgos = "Dark Knight",
