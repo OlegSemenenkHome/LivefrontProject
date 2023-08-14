@@ -33,7 +33,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -73,70 +72,72 @@ internal fun HomeScreen(navController: NavHostController) {
     val isListEmpty = viewModel.characterList.isEmpty()
 
     Surface(
-        modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondary
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.secondary
     ) {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(stringResource((R.string.app_name)))
-                }, actions = {
-                    if (!isListEmpty) {
-                        IconButton(onClick = {
-                            navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
-                        }) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
-                                contentDescription = stringResource(id = R.string.random_icon)
-                            )
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(stringResource((R.string.app_name)))
+                    }, actions = {
+                        if (!isListEmpty) {
+                            IconButton(onClick = {
+                                navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+                            }) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
+                                    contentDescription = stringResource(id = R.string.random_icon)
+                                )
+                            }
+                            IconButton(onClick = { active = true }) {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = stringResource(id = R.string.search_icon)
+                                )
+                            }
                         }
-                        IconButton(onClick = { active = true }) {
+                    })
+                if (active) {
+                    SearchBar(
+                        query = viewModel.searchQuery,
+                        onQueryChange = viewModel::onSearchQueryChanged,
+                        onSearch = {
+                            viewModel.getCharacter(it)?.let { character ->
+                                navController.navigate(route = "detailView/${character.id}")
+                            }
+                            active = false
+                        },
+                        active = true,
+                        onActiveChange = { active = it },
+                        placeholder = { Text(stringResource(R.string.search_placeholder_text)) },
+                        leadingIcon = {
                             Icon(
                                 Icons.Default.Search,
-                                contentDescription = stringResource(id = R.string.search_icon)
+                                contentDescription = stringResource(R.string.search_icon)
                             )
-                        }
-                    }
-                })
-            if (active) {
-                SearchBar(
-                    query = viewModel.searchQuery,
-                    onQueryChange = viewModel::onSearchQueryChanged,
-                    onSearch = {
-                        viewModel.getCharacter(it)?.let { character ->
-                            navController.navigate(route = "detailView/${character.id}")
-                        }
-                        active = false
-                    },
-                    active = true,
-                    onActiveChange = { active = it },
-                    placeholder = { Text(stringResource(R.string.search_placeholder_text)) },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search_icon)
-                        )
-                    })
-                {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        items(viewModel.filteredCharacters) { character ->
-                            ListItem(headlineContent = { Text(text = character.name) },
-                                modifier = Modifier
-                                    .clickable {
-                                        navController.navigate(route = "detailView/${character.id}")
-                                        active = false
-                                        viewModel.clearQuery()
-                                    }
-                                    .animateItemPlacement()
-                            )
+                        })
+                    {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            items(viewModel.filteredCharacters) { character ->
+                                ListItem(headlineContent = { Text(text = character.name) },
+                                    modifier = Modifier
+                                        .clickable {
+                                            navController.navigate(route = "detailView/${character.id}")
+                                            active = false
+                                            viewModel.clearQuery()
+                                        }
+                                        .animateItemPlacement()
+                                )
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
         { padding ->
             if (viewModel.loading) {
                 Box(
