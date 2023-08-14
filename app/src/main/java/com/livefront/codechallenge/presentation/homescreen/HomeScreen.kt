@@ -80,11 +80,12 @@ internal fun HomeScreen(navController: NavHostController) {
                 TopAppBar(
                     title = {
                         Text(stringResource((R.string.app_name)))
-                    }, actions = {
+                    },
+                    actions = {
                         if (!isListEmpty) {
-                            IconButton(onClick = {
-                                navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
-                            }) {
+                            IconButton(
+                                onClick = { navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}") }
+                            ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
                                     contentDescription = stringResource(id = R.string.random_icon)
@@ -116,7 +117,8 @@ internal fun HomeScreen(navController: NavHostController) {
                                 Icons.Default.Search,
                                 contentDescription = stringResource(R.string.search_icon)
                             )
-                        })
+                        }
+                    )
                     {
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth(),
@@ -124,7 +126,8 @@ internal fun HomeScreen(navController: NavHostController) {
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(viewModel.filteredCharacters) { character ->
-                                ListItem(headlineContent = { Text(text = character.name) },
+                                ListItem(
+                                    headlineContent = { Text(text = character.name) },
                                     modifier = Modifier
                                         .clickable {
                                             navController.navigate(route = "detailView/${character.id}")
@@ -169,9 +172,9 @@ internal fun HomeScreen(navController: NavHostController) {
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
+                    contentPadding = padding,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding)
                         .testTag(CHARACTER_LIST)
                 ) {
                     items(viewModel.characterList) { character ->

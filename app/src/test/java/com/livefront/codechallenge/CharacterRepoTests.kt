@@ -2,7 +2,7 @@ package com.livefront.codechallenge
 
 import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.CharacterAPI
-import com.livefront.codechallenge.data.CharacterRepositoryImp
+import com.livefront.codechallenge.data.CharacterRepositoryImpl
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
 import com.livefront.codechallenge.data.Work
@@ -18,7 +18,7 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 
 @ExperimentalCoroutinesApi
-class CharacterRepositoryImpTest {
+class CharacterRepositoryImplTest {
 
     private val characters = listOf(
         Character(
@@ -81,12 +81,12 @@ class CharacterRepositoryImpTest {
     private val mockApi: CharacterAPI = mockk()
 
     // Under test
-    private lateinit var repository: CharacterRepositoryImp
+    private lateinit var repository: CharacterRepositoryImpl
 
     @Before
     fun setUp() {
         Dispatchers.setMain(Dispatchers.Unconfined)
-        repository = CharacterRepositoryImp(mockApi)
+        repository = CharacterRepositoryImpl(mockApi)
     }
 
     @Test

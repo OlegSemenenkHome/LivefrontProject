@@ -13,4 +13,5 @@
     //DetailScreen
     <string name="load_image_error">Unable to load image</string>
     <string name="load_character_error">Unable to character</string>
+    <string name="detail_screen_top_app_bar_title">Character Details</string>
 </resources>

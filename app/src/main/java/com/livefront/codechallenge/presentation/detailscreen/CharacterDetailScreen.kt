@@ -47,7 +47,7 @@ internal fun CharacterDetailScreen(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Character Details") },
+                    title = { Text(text = stringResource(id = R.string.detail_screen_top_app_bar_title)) },
                     navigationIcon = {
                         IconButton(
                             onClick = { navController.navigateUp() },
@@ -59,7 +59,8 @@ internal fun CharacterDetailScreen(navController: NavController) {
                         }
                     },
                 )
-            }) { paddingValues ->
+            }
+        ) { paddingValues ->
             if (character != null) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

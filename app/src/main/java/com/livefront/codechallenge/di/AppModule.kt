@@ -2,7 +2,7 @@ package com.livefront.codechallenge.di
 
 import com.livefront.codechallenge.data.CharacterAPI
 import com.livefront.codechallenge.data.CharacterRepository
-import com.livefront.codechallenge.data.CharacterRepositoryImp
+import com.livefront.codechallenge.data.CharacterRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +30,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCharacterRepository(api: CharacterAPI): CharacterRepository {
-        return CharacterRepositoryImp(api)
+        return CharacterRepositoryImpl(api)
     }
 }

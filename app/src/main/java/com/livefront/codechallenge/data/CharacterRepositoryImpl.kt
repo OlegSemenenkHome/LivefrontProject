@@ -10,7 +10,7 @@ import javax.inject.Inject
  *  but we could also store them in a room database,
  *  but that seemed like overkill for this project
  */
-internal class CharacterRepositoryImp @Inject constructor(
+internal class CharacterRepositoryImpl @Inject constructor(
     private val api: CharacterAPI,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CharacterRepository {

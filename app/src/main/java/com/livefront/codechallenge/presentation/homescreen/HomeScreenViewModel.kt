@@ -35,12 +35,11 @@ internal class HomeScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             repo.getCharacters().onSuccess {
-                loading = false
                 characterList.addAll(it)
             }.onFailure {
-                loading = false
                 Log.e(VIEWMODEL_LOGTAG, "Unable to load characters", it)
             }
+            loading = false
         }
     }
 
