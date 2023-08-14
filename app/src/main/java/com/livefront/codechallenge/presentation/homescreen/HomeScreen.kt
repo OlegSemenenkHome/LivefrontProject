@@ -53,7 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.livefront.codechallenge.R
-import com.livefront.codechallenge.presentation.composables.CenteredText
+import com.livefront.codechallenge.presentation.customcomposables.CenteredText
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_CARD
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_LIST
 import com.livefront.codechallenge.data.Biography

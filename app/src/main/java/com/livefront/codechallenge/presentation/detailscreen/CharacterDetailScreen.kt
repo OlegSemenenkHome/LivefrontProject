@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.livefront.codechallenge.R
-import com.livefront.codechallenge.presentation.composables.CenteredText
+import com.livefront.codechallenge.presentation.customcomposables.CenteredText
 import com.livefront.codechallenge.utils.checkIfUnknown
 
 @OptIn(ExperimentalMaterial3Api::class)
