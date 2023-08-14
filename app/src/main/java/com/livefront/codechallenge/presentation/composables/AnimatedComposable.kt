@@ -1,4 +1,4 @@
-package com.livefront.codechallenge.core
+package com.livefront.codechallenge.presentation.composables
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -19,9 +19,7 @@ internal fun NavGraphBuilder.animatedSlideComposable(
 ) = composable(
     route = route,
     arguments = arguments,
-    enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
     exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-    popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
-    popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+
     content = content,
 )

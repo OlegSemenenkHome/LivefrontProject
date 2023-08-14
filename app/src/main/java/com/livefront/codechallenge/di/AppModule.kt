@@ -1,8 +1,8 @@
 package com.livefront.codechallenge.di
 
 import com.livefront.codechallenge.data.CharacterAPI
-import com.livefront.codechallenge.data.CharacterRepository
-import com.livefront.codechallenge.data.CharacterRepositoryImpl
+import com.livefront.codechallenge.data.repo.CharacterRepository
+import com.livefront.codechallenge.data.repo.CharacterRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

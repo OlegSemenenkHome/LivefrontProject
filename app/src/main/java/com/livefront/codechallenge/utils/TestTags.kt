@@ -1,4 +1,4 @@
-package com.livefront.codechallenge.core
+package com.livefront.codechallenge.utils
 
 object TestTags {
     const val CHARACTER_LIST = "LAZY_LIST"

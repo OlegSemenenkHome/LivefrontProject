@@ -1,6 +1,6 @@
 package com.livefront.codechallenge.di
 
-import com.livefront.codechallenge.data.CharacterRepository
+import com.livefront.codechallenge.data.repo.CharacterRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent

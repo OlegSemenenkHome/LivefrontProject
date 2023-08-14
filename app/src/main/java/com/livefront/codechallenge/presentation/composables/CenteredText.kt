@@ -1,4 +1,4 @@
-package com.livefront.codechallenge.core
+package com.livefront.codechallenge.presentation.composables
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

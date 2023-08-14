@@ -1,4 +1,4 @@
-package com.livefront.codechallenge.core
+package com.livefront.codechallenge.utils
 
 /*
  * function to replace "-" with "Unknown"

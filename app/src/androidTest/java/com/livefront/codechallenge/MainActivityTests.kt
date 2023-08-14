@@ -22,7 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.test.platform.app.InstrumentationRegistry
-import com.livefront.codechallenge.core.TestTags
+import com.livefront.codechallenge.utils.TestTags
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailScreen
 import com.livefront.codechallenge.presentation.homescreen.HomeScreen
 import com.livefront.codechallenge.ui.theme.LivefrontCodeChallengeTheme

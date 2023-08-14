@@ -3,11 +3,12 @@ package com.livefront.codechallenge
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.livefront.codechallenge.core.animatedSlideComposable
+import com.livefront.codechallenge.presentation.composables.animatedSlideComposable
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailScreen
 import com.livefront.codechallenge.presentation.homescreen.HomeScreen
 import com.livefront.codechallenge.ui.theme.LivefrontCodeChallengeTheme
@@ -20,7 +21,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             LivefrontCodeChallengeTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "homeScreen") {
+                NavHost(
+                    enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
+                    exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
+                    popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+                    popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
+                    navController = navController,
+                    startDestination = "homeScreen"
+                ) {
                     animatedSlideComposable("homeScreen") { HomeScreen(navController) }
                     animatedSlideComposable(
                         "detailView/{detailKey}",

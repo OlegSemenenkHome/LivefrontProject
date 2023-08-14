@@ -2,7 +2,7 @@ package com.livefront.codechallenge
 
 import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.CharacterAPI
-import com.livefront.codechallenge.data.CharacterRepositoryImpl
+import com.livefront.codechallenge.data.repo.CharacterRepositoryImpl
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
 import com.livefront.codechallenge.data.Work
@@ -119,6 +119,6 @@ class CharacterRepositoryImplTest {
 
         //Then
         val batman = repository.getCharacter(2L)
-        assertEquals("Batman", batman.name)
+        assertEquals("Batman", batman?.name)
     }
 }

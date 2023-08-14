@@ -1,5 +1,7 @@
-package com.livefront.codechallenge.data
+package com.livefront.codechallenge.data.repo
 
+import com.livefront.codechallenge.data.Character
+import com.livefront.codechallenge.data.CharacterAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -7,8 +9,8 @@ import javax.inject.Inject
 
 /*
  *  Repo to make calls, and get get a character. We store the results here,
- *  but we could also store them in a room database,
- *  but that seemed like overkill for this project
+ *  but we could also store them in a room database, but that seemed
+ *  unnecessary for this project
  */
 internal class CharacterRepositoryImpl @Inject constructor(
     private val api: CharacterAPI,
@@ -28,10 +30,8 @@ internal class CharacterRepositoryImpl @Inject constructor(
     }
 
     /*
-     * return the character with the Id or just the
-     * spot in the list if we are getting a random character
+     * return the character with the Id
      */
-    override fun getCharacter(characterId: Long): Character {
-        return characterList.find { it.id == characterId } ?: characterList[characterId.toInt()]
-    }
+    override fun getCharacter(characterId: Long): Character? =
+         characterList.find { it.id == characterId }
 }

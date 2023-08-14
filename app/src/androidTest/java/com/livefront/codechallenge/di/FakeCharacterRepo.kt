@@ -2,7 +2,7 @@ package com.livefront.codechallenge.di
 
 import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.Character
-import com.livefront.codechallenge.data.CharacterRepository
+import com.livefront.codechallenge.data.repo.CharacterRepository
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
 import com.livefront.codechallenge.data.Work
