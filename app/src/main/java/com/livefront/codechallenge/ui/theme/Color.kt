@@ -2,10 +2,14 @@ package com.livefront.codechallenge.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFF190A3A)
-val PurpleGrey80 = Color(0xFF23094D)
-val Pink80 = Color(0xFF0A0A44)
+val MutedBlue = Color(0xFF5A8DA0)
+val DeeperMutedBlue = Color(0xFF406672)
+val MutedEarthyGold = Color(0xFFB09E77)
+val OffWhite = Color(0xFFEDEDED)
+val DarkerOffWhite = Color(0xFFDADADA)
 
-val Purple40 = Color(0xFF220968)
-val PurpleGrey40 = Color(0xFF1E36A2)
-val Pink40 = Color(0xFF0A0A44)
+val DarkSlateBlue = Color(0xFF3D578B)
+val DarkSlateGray = Color(0xFF2F4F4F)
+val DarkGreen = Color(0xFF006400)
+val VeryDarkGray = Color(0xFF1C1C1C)
+val SlightlyDarkerVeryDarkGray = Color(0xFF262626)

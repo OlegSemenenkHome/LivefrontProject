@@ -67,30 +67,31 @@ internal fun HomeScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondary
     ) {
         Scaffold(topBar = {
-            TopAppBar(title = {
-                Text(stringResource((R.string.app_name)))
-            }, actions = {
-                IconButton(onClick = {
-                    if (!isListEmpty) {
-                        navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+            TopAppBar(
+                title = {
+                    Text(stringResource((R.string.app_name)))
+                }, actions = {
+                    IconButton(onClick = {
+                        if (!isListEmpty) {
+                            navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}")
+                        }
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
+                            contentDescription = stringResource(id = R.string.random_icon)
+                        )
                     }
-                }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
-                        contentDescription = stringResource(id = R.string.random_icon)
-                    )
-                }
-                IconButton(onClick = {
-                    if (!isListEmpty) {
-                        active = true
+                    IconButton(onClick = {
+                        if (!isListEmpty) {
+                            active = true
+                        }
+                    }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.search_icon)
+                        )
                     }
-                }) {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search_icon)
-                    )
-                }
-            })
+                })
             if (active) {
                 SearchBar(
                     query = viewModel.searchQuery,
