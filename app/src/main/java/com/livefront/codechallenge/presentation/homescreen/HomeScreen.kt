@@ -83,7 +83,7 @@ internal fun HomeScreen(navController: NavHostController) {
                     actions = {
                         if (!isListEmpty) {
                             IconButton(
-                                onClick = { navController.navigate(route = "detailView/${(1..viewModel.characterList.size).random()}") }
+                                onClick = { navController.navigate(route = "detailView/${viewModel.characterList.random().id}") }
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),

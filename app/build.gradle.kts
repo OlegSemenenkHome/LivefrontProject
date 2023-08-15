@@ -74,6 +74,10 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    debugImplementation(libs.ui.tooling)
+
+    //To help check for leaks commented out since it harms performance
+    // debugImplementation (libs.leakcanary.android)
 
     //networking
     implementation(libs.converter.moshi)
@@ -88,13 +92,6 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
-
-    //Room
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.room.runtime)
-
-    debugImplementation(libs.ui.tooling)
 
     // Local unit tests
     testImplementation(libs.kotlinx.coroutines.test)

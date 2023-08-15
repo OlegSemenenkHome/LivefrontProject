@@ -56,6 +56,7 @@ internal class HomeScreenViewModel @Inject constructor(
 
     /*
      * Updating the list with the new string
+     * done off the main thread to ensure smooth UI experience
      */
     fun onSearchQueryChanged(query: String) {
         searchQuery = query
