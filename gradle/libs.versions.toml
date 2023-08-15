@@ -1,5 +1,7 @@
 [versions]
-agp = "8.2.0-alpha15"
+# targeting 8.1.0 so we support the latest stable version of AS. Otherwise we would be using 8.2.0
+# since it is what is needed for any app targeting API 34
+agp = "8.1.0"
 animation = "1.5.0"
 coil-compose = "2.2.2"
 hilt-navigation-compose = "1.0.0"

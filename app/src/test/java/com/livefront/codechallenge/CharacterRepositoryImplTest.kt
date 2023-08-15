@@ -1,6 +1,5 @@
 package com.livefront.codechallenge
 
-import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.CharacterAPI
 import com.livefront.codechallenge.data.repo.CharacterRepositoryImpl
 import com.livefront.codechallenge.data.Connections
@@ -24,15 +23,6 @@ class CharacterRepositoryImplTest {
         Character(
             id = 1,
             name = "Superman",
-            biography = Biography(
-                fullName = "Clark Kent",
-                alterEgos = "Kal-El",
-                aliases = listOf("Man of Steel", "Last Son of Krypton"),
-                placeOfBirth = "Krypton",
-                firstAppearance = "Action Comics #1 (1938)",
-                publisher = "DC Comics",
-                alignment = "Good"
-            ),
             work = Work(
                 occupation = "Reporter",
                 base = "Metropolis"
@@ -51,15 +41,6 @@ class CharacterRepositoryImplTest {
         Character(
             id = 2,
             name = "Batman",
-            biography = Biography(
-                fullName = "Bruce Wayne",
-                alterEgos = "Dark Knight",
-                aliases = listOf("Caped Crusader", "World's Greatest Detective"),
-                placeOfBirth = "Gotham City",
-                firstAppearance = "Detective Comics #27 (1939)",
-                publisher = "DC Comics",
-                alignment = "Good"
-            ),
             work = Work(
                 occupation = "Businessman",
                 base = "Gotham City"

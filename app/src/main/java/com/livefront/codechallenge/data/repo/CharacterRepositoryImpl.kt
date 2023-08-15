@@ -8,8 +8,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /*
- *  Repo to make calls, and get get a character. We store the results here,
- *  but we could also store them in a room database, but that seemed
+ *   We store the results here, but we could also
+ * store them in a room database, but that seemed
  *  unnecessary for this project
  */
 internal class CharacterRepositoryImpl @Inject constructor(
@@ -33,5 +33,5 @@ internal class CharacterRepositoryImpl @Inject constructor(
      * return the character with the Id
      */
     override fun getCharacter(characterId: Long): Character? =
-         characterList.find { it.id == characterId }
+        characterList.find { it.id == characterId }
 }

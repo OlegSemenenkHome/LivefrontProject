@@ -3,8 +3,9 @@ package com.livefront.codechallenge.data.repo
 import com.livefront.codechallenge.data.Character
 
 /**
- * This interface for a repo is for getting and storing the Characters.
- * Also for fetch a specific character if we need it
+ * Defines the contract for managing character data, including:
+ * Retrieving all characters, and
+ * fetching a specific character by its unique identifier
  */
 interface CharacterRepository {
 

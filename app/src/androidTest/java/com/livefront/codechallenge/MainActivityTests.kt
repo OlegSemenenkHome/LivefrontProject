@@ -16,7 +16,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.NavType
-import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -53,7 +52,6 @@ class MainActivityTests {
         hiltRule.inject()
         composeTestRule.activity.setContent {
             val navController = rememberNavController()
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
             LivefrontCodeChallengeTheme {
                 NavHost(
                     navController = navController,
@@ -61,11 +59,9 @@ class MainActivityTests {
                 ) {
                     composable("homeScreen") { HomeScreen(navController) }
                     composable(
-                        "detailView/{detailKey}",
-                        arguments = listOf(navArgument("detailKey") { type = NavType.StringType })
-                    ) {
-                        CharacterDetailScreen(navController = navController)
-                    }
+                        "detailView/{detailKey}", arguments = listOf(navArgument("detailKey")
+                        { type = NavType.StringType })
+                    ) { CharacterDetailScreen(navController = navController) }
                 }
             }
         }

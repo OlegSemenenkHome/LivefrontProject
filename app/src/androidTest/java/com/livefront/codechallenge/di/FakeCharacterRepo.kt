@@ -1,6 +1,5 @@
 package com.livefront.codechallenge.di
 
-import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.repo.CharacterRepository
 import com.livefront.codechallenge.data.Connections
@@ -23,15 +22,6 @@ class FakeCharacterRepo : CharacterRepository {
         Character(
             id = 1,
             name = "Superman",
-            biography = Biography(
-                fullName = "Clark Kent",
-                alterEgos = "Kal-El",
-                aliases = listOf("Man of Steel", "Last Son of Krypton"),
-                placeOfBirth = "Krypton",
-                firstAppearance = "Action Comics #1 (1938)",
-                publisher = "DC Comics",
-                alignment = "Good"
-            ),
             work = Work(
                 occupation = "Reporter",
                 base = "Metropolis"
@@ -50,15 +40,6 @@ class FakeCharacterRepo : CharacterRepository {
         Character(
             id = 2,
             name = "Batman",
-            biography = Biography(
-                fullName = "Bruce Wayne",
-                alterEgos = "Dark Knight",
-                aliases = listOf("Caped Crusader", "World's Greatest Detective"),
-                placeOfBirth = "Gotham City",
-                firstAppearance = "Detective Comics #27 (1939)",
-                publisher = "DC Comics",
-                alignment = "Good"
-            ),
             work = Work(
                 occupation = "Businessman",
                 base = "Gotham City"

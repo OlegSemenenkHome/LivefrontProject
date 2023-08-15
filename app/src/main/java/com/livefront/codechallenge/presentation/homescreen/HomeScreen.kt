@@ -56,7 +56,6 @@ import com.livefront.codechallenge.R
 import com.livefront.codechallenge.presentation.customcomposables.CenteredText
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_CARD
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_LIST
-import com.livefront.codechallenge.data.Biography
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
@@ -237,15 +236,6 @@ private fun CardPreview() {
             character = Character(
                 id = 1,
                 name = "Superman",
-                biography = Biography(
-                    fullName = "",
-                    alterEgos = "",
-                    aliases = listOf(""),
-                    placeOfBirth = "",
-                    firstAppearance = "",
-                    publisher = "",
-                    alignment = ""
-                ),
                 work = Work(occupation = "", base = ""),
                 connections = Connections(groupAffiliation = "", relatives = ""),
                 images = Images(xs = "", sm = "", md = "", lg = "")
