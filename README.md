@@ -16,14 +16,25 @@ These tests simulate standard user interactions to validate the application's ma
 GitHub Actions: 
 To safeguard the codebase's quality, a GitHub Action has been configured. This action automatically triggers unit tests on every commit. 
 
-## Libraries used 
+## Libraries Used 
  * Dependency injection: Hilt
  * Networking: Retrofit
  * Serialization: Moshi
  * Testing: Mockk, JUnit
  * Image Loading: Coil
 
+## Setup
+This application requires Android Studio Giraffe and above to build since it uses version 8.1 of Android Gradle Plugin (AGP). 
+Android Studio Giraffe is the latest stable version, but if older versions are needed lowing the AGP version should help.
+
+## Possible Improvements 
+* Enhanced Sorting Options: Allow users to sort the character list based on various criteria such as stats, favorites, etc. This would enable users to more efficiently navigate through the list.
+* Expanded Detail Screen: Work on enhancing the character detail screen to display more comprehensive information about each character. This would include additional fields like backstory, skills, relationships, etc.
+* Responsive Design: Implement a more intricate and responsive design for the detail screen to ensure that all data is displayed in a visually appealing and easy-to-read manner, regardless of the device or screen size.
+
+
 ## Preview 
 | HomeScreen | Detail Screen |
 |---|---|
  <img src="https://github.com/OlegSemenenkHome/LivefrontProject/blob/main/assets/HomeScreen.png" width="350">| <img src="https://github.com/OlegSemenenkHome/LivefrontProject/blob/main/assets/Batman.png" width="350"> |
+
