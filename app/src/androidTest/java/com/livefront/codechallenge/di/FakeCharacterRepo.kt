@@ -14,8 +14,14 @@ class FakeCharacterRepo : CharacterRepository {
         return Result.success(characterList)
     }
 
-    override fun getCharacter(characterId: Long): Character {
-        return characterList.find { it.id == characterId } ?: characterList[characterId.toInt()]
+    override suspend fun getCharacter(characterId: Long): Result<Character> {
+        return runCatching {
+            if (characterList.isEmpty()) {
+                getCharacters()
+            }
+            characterList.find { it.id == characterId }
+                ?: throw Exception("Unable to get Character")
+        }
     }
 
     private val characterList = listOf(
@@ -31,10 +37,10 @@ class FakeCharacterRepo : CharacterRepository {
                 relatives = "Lois Lane (Wife), Jor-El (Father), Lara (Mother)"
             ),
             images = Images(
-                xs = "",
-                sm = "",
-                md = "",
-                lg = ""
+                extraSmall = "",
+                small = "",
+                medium = "",
+                large = ""
             )
         ),
         Character(
@@ -49,10 +55,10 @@ class FakeCharacterRepo : CharacterRepository {
                 relatives = "Damian Wayne (Son), Dick Grayson (Adopted Son)"
             ),
             images = Images(
-                xs = "",
-                sm = "",
-                md = "",
-                lg = ""
+                extraSmall = "",
+                small = "",
+                medium = "",
+                large = ""
             )
         )
     )

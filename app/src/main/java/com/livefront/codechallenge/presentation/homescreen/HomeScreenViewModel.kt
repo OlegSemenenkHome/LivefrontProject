@@ -1,16 +1,17 @@
 package com.livefront.codechallenge.presentation.homescreen
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.repo.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,37 +22,51 @@ private const val VIEWMODEL_LOGTAG = "HOMESCREEN_VIEWMODEL"
 internal class HomeScreenViewModel @Inject constructor(
     private val repo: CharacterRepository
 ) : ViewModel() {
-    val characterList = mutableStateListOf<Character>()
 
-    var loading: Boolean by mutableStateOf(true)
-        private set
+    private val _uiState = MutableStateFlow(HomeScreenUIState(isLoading = true))
+    val uiState: StateFlow<HomeScreenUIState> = _uiState
 
-    var filteredCharacters by mutableStateOf(emptyList<Character>())
-        private set
-
-    var searchQuery: String by mutableStateOf("")
-        private set
+    val searchQuery: MutableState<String> = mutableStateOf("")
 
     init {
         viewModelScope.launch {
             repo.getCharacters().onSuccess {
-                characterList.addAll(it)
+                loadSuccess(it)
             }.onFailure {
+                loadFailure(it)
                 Log.e(VIEWMODEL_LOGTAG, "Unable to load characters", it)
             }
-            loading = false
+
+            stopLoading()
+        }
+    }
+
+    fun retryLoading() {
+        startLoading()
+
+        viewModelScope.launch {
+            repo.getCharacters().onSuccess {
+                loadSuccess(it)
+            }.onFailure {
+                loadFailure(it)
+            }
+
+            stopLoading()
         }
     }
 
     /*
      * Method to see if the search query matches what we have in a list
      */
-    fun getCharacter(query: String): Character? {
-        characterList.forEach { character ->
-            if (character.name.lowercase().contentEquals(query.lowercase())) return character
+    fun searchForCharacter(query: String) {
+        val character = uiState.value.list.find { character ->
+            clearQuery()
+            character.name.lowercase() == query.lowercase()
         }
-        clearQuery()
-        return null
+
+        _uiState.update { state ->
+            state.copy(character = character)
+        }
     }
 
     /*
@@ -59,10 +74,12 @@ internal class HomeScreenViewModel @Inject constructor(
      * done off the main thread to ensure smooth UI experience
      */
     fun onSearchQueryChanged(query: String) {
-        searchQuery = query
+        searchQuery.value = query
         viewModelScope.launch {
-            withContext(Dispatchers.Default) {
-                filteredCharacters = getFilteredCharacters(query, characterList)
+            getFilteredCharacters(query, uiState.value.list).let { filteredList ->
+                _uiState.update { state ->
+                    state.copy(filteredCharacters = filteredList)
+                }
             }
         }
     }
@@ -71,18 +88,61 @@ internal class HomeScreenViewModel @Inject constructor(
      * Clean up from using the search
      */
     fun clearQuery() {
-        searchQuery = ""
-        filteredCharacters = emptyList()
+        searchQuery.value = ""
+        _uiState.update { state ->
+            state.copy(filteredCharacters = emptyList())
+        }
+    }
+
+    fun characterNavigated() {
+        _uiState.update { state ->
+            state.copy(character = null)
+        }
+    }
+
+    private fun startLoading() {
+        _uiState.update { state ->
+            state.copy(isLoading = true, hasError = false)
+        }
+    }
+
+    private fun loadSuccess(characters: List<Character>) {
+        _uiState.update { state ->
+            state.copy(list = characters)
+        }
+    }
+
+    private fun loadFailure(e: Throwable) {
+        _uiState.update { state ->
+            state.copy(hasError = true)
+        }
+        Log.e(VIEWMODEL_LOGTAG, "Unable to load characters", e)
+    }
+
+    private fun stopLoading() {
+        _uiState.update { state ->
+            state.copy(isLoading = false)
+        }
     }
 
     /*
      * Filtering the list, string must match the start of the character
      */
-    private fun getFilteredCharacters(
+    private suspend fun getFilteredCharacters(
         query: String,
         listAssets: List<Character>,
     ): List<Character> {
-        if (query.isEmpty()) return emptyList()
-        return listAssets.filter { it.name.lowercase().startsWith(query.lowercase()) }
+        return withContext(Dispatchers.Default) {
+            if (query.isEmpty()) emptyList<Character>()
+            listAssets.filter { it.name.lowercase().startsWith(query.lowercase()) }
+        }
     }
 }
+
+data class HomeScreenUIState(
+    val isLoading: Boolean = true,
+    val hasError: Boolean = false,
+    val filteredCharacters: List<Character> = emptyList(),
+    val list: List<Character> = emptyList(),
+    val character: Character? = null
+)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,19 +27,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.livefront.codechallenge.R
 import com.livefront.codechallenge.presentation.customcomposables.CenteredText
+import com.livefront.codechallenge.presentation.customcomposables.CenteredTextWithButton
 import com.livefront.codechallenge.utils.checkIfUnknown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CharacterDetailScreen(navController: NavController) {
-
-    val viewModel = hiltViewModel<CharacterDetailViewModel>()
-
-    val character = viewModel.character
+internal fun CharacterDetailScreen(
+    navigateUp: () -> Unit,
+    viewModel: CharacterDetailViewModel = hiltViewModel()
+) {
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -50,7 +52,7 @@ internal fun CharacterDetailScreen(navController: NavController) {
                     title = { Text(text = stringResource(id = R.string.detail_screen_top_app_bar_title)) },
                     navigationIcon = {
                         IconButton(
-                            onClick = { navController.navigateUp() },
+                            onClick = navigateUp,
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
@@ -61,53 +63,71 @@ internal fun CharacterDetailScreen(navController: NavController) {
                 )
             }
         ) { paddingValues ->
-            if (character != null) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    SubcomposeAsyncImage(
-                        model = character.images.lg,
-                        contentDescription = "An image of ${character.name}",
-                        loading = { CircularProgressIndicator() },
-                        error = { CenteredText(text = stringResource(id = R.string.load_image_error)) },
-                        modifier = Modifier
+            when (val currentState = uiState.value) {
+                is CharacterDetailState.Loading -> {
+                    CircularProgressIndicator(
+                        Modifier
                             .padding(
                                 horizontal = 10.dp,
                                 vertical = 30.dp
                             )
-                            .fillMaxWidth()
-                            .height(350.dp)
-                    )
-
-                    Text(
-                        text = character.name,
-                        fontSize = 26.sp,
-                    )
-
-                    Text(
-                        text = "Occupation: ${character.work.occupation.checkIfUnknown()}",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                    )
-
-                    Text(
-                        text = "Base: ${character.work.base.checkIfUnknown()}",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                    )
-
-                    Text(
-                        text = "Affiliation(s): ${character.connections.groupAffiliation.checkIfUnknown()}",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                            .size(200.dp)
                     )
                 }
-            } else {
-                CenteredText(text = stringResource(id = R.string.load_character_error))
+
+                is CharacterDetailState.Success -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        SubcomposeAsyncImage(
+                            model = currentState.character.images.large,
+                            contentDescription = stringResource(R.string.image_description) + currentState.character.name,
+                            error = { CenteredText(text = stringResource(id = R.string.load_image_error)) },
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = 10.dp,
+                                    vertical = 30.dp
+                                )
+                                .fillMaxWidth()
+                                .height(350.dp)
+                        )
+
+                        Text(
+                            text = currentState.character.name,
+                            fontSize = 26.sp,
+                        )
+
+                        Text(
+                            text = stringResource(R.string.character_occupation) + currentState.character.work.occupation.checkIfUnknown(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+
+                        Text(
+                            text = stringResource(R.string.character_base) + currentState.character.work.base.checkIfUnknown(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+
+                        Text(
+                            text = stringResource(R.string.character_affiliation) + currentState.character.connections.groupAffiliation.checkIfUnknown(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+                    }
+                }
+
+                is CharacterDetailState.Error -> {
+                    CenteredTextWithButton(
+                        text = stringResource(id = R.string.load_character_error),
+                        buttonText = stringResource(R.string.try_again_text),
+                        onClick = viewModel::retryLoading
+                    )
+                }
             }
         }
     }

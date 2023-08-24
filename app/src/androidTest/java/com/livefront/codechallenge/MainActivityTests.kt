@@ -12,9 +12,11 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.printToLog
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,11 +59,11 @@ class MainActivityTests {
                     navController = navController,
                     startDestination = "homeScreen"
                 ) {
-                    composable("homeScreen") { HomeScreen(navController) }
+                    composable("homeScreen") { HomeScreen({ id -> navController.navigate(route = "detailView/$id") }) }
                     composable(
                         "detailView/{detailKey}", arguments = listOf(navArgument("detailKey")
                         { type = NavType.StringType })
-                    ) { CharacterDetailScreen(navController = navController) }
+                    ) { CharacterDetailScreen({ navController.navigateUp() }) }
                 }
             }
         }
@@ -125,6 +127,7 @@ class MainActivityTests {
                 listOf("Search", appContext.getString(R.string.search_icon))
             )
         ).performImeAction()
+        composeTestRule.onRoot().printToLog("currentLabelExists")
         composeTestRule.onNodeWithText("Occupation: Businessman").assertExists()
     }
 }

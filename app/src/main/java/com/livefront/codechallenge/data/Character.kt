@@ -1,5 +1,7 @@
 package com.livefront.codechallenge.data
 
+import com.squareup.moshi.Json
+
 data class Character(
     val id: Long,
     val name: String,
@@ -19,8 +21,8 @@ data class Connections(
 )
 
 data class Images(
-    val xs: String,
-    val sm: String,
-    val md: String,
-    val lg: String,
+    @field:Json(name = "xs") val extraSmall: String,
+    @field:Json(name = "sm") val small: String,
+    @field:Json(name = "md") val medium: String,
+    @field:Json(name = "lg") val large: String,
 )

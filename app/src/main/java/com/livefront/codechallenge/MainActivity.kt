@@ -29,11 +29,17 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = "homeScreen"
                 ) {
-                    composable("homeScreen") { HomeScreen(navController) }
+                    composable(
+                        "homeScreen",
+                    ) {
+                        HomeScreen({ id -> navController.navigate(route = "detailView/$id") })
+                    }
                     composable(
                         "detailView/{detailKey}",
                         arguments = listOf(navArgument("detailKey") { type = NavType.StringType })
-                    ) { CharacterDetailScreen(navController = navController) }
+                    ) {
+                        CharacterDetailScreen({ navController.navigateUp() })
+                    }
                 }
             }
         }
