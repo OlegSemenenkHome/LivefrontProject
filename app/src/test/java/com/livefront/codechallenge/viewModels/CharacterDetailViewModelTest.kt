@@ -1,6 +1,7 @@
-package com.livefront.codechallenge
+package com.livefront.codechallenge.viewModels
 
 import androidx.lifecycle.SavedStateHandle
+import com.livefront.codechallenge.characters
 import com.livefront.codechallenge.data.repo.CharacterRepository
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailState
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailViewModel

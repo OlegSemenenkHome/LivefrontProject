@@ -41,7 +41,7 @@ import com.livefront.codechallenge.utils.checkIfUnknown
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CharacterDetailScreen(
-    navigateUp: () -> Unit,
+    onBackPressed: () -> Unit,
     viewModel: CharacterDetailViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,7 +56,7 @@ internal fun CharacterDetailScreen(
                     title = { Text(text = stringResource(id = R.string.detail_screen_top_app_bar_title)) },
                     navigationIcon = {
                         IconButton(
-                            onClick = navigateUp,
+                            onClick = onBackPressed,
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,

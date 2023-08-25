@@ -1,6 +1,7 @@
-package com.livefront.codechallenge
+package com.livefront.codechallenge.viewModels
 
 import android.util.Log
+import com.livefront.codechallenge.characters
 import com.livefront.codechallenge.data.repo.CharacterRepository
 import com.livefront.codechallenge.presentation.homescreen.HomeScreenViewModel
 import io.mockk.coEvery
