@@ -1,7 +1,7 @@
 package com.livefront.codechallenge
 
 import androidx.lifecycle.SavedStateHandle
-import com.livefront.codechallenge.data.repo.CharacterRepositoryImpl
+import com.livefront.codechallenge.data.repo.CharacterRepository
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailState
 import com.livefront.codechallenge.presentation.detailscreen.CharacterDetailViewModel
 import io.mockk.coEvery
@@ -16,7 +16,7 @@ import org.junit.Test
 
 internal class CharacterDetailViewModelTest {
 
-    private val mockRepo: CharacterRepositoryImpl = mockk()
+    private val mockRepo: CharacterRepository = mockk()
     private val mockkSaveStateHandle: SavedStateHandle = mockk()
 
     // Under test
@@ -38,5 +38,21 @@ internal class CharacterDetailViewModelTest {
         val result = viewModel.uiState.value
         // Then
         assert(result is CharacterDetailState.Success)
+    }
+
+    @Test
+    fun `We should be able to retry getting the character when the ViewModel didn't have it previously`() = runTest {
+        // Given
+        coEvery { mockRepo.getCharacter(2) } returns Result.failure(Exception())
+        every { mockkSaveStateHandle.get<String>(any()) } returns "2"
+        viewModel = CharacterDetailViewModel(savedStateHandle = mockkSaveStateHandle, repository = mockRepo)
+
+        //Assert the state is error
+        assert(viewModel.uiState.value is CharacterDetailState.Error)
+        coEvery { mockRepo.getCharacter(2) } returns Result.success(characters[1])
+        viewModel.retryLoading()
+
+        // Then
+        assert(viewModel.uiState.value is CharacterDetailState.Success)
     }
 }

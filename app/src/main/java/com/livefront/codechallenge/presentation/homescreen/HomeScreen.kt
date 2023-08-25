@@ -74,7 +74,7 @@ internal fun HomeScreen(
     LaunchedEffect(key1 = uiState.value.character) {
         uiState.value.character?.id?.let {
             navigateToDetailScreen(it)
-            viewModel.characterNavigated()
+            viewModel.clearCharacter()
             active = false
         }
     }
@@ -111,9 +111,7 @@ internal fun HomeScreen(
                     SearchBar(
                         query = viewModel.searchQuery.value,
                         onQueryChange = viewModel::onSearchQueryChanged,
-                        onSearch = {
-                            viewModel.searchForCharacter(it)
-                        },
+                        onSearch = viewModel::searchForCharacter,
                         active = true,
                         onActiveChange = { active = it },
                         placeholder = { Text(stringResource(R.string.search_placeholder_text)) },

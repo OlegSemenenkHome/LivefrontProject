@@ -9,7 +9,7 @@ import javax.inject.Inject
  * store them in a room database, but that seemed
  *  unnecessary for this project
  */
-class CharacterRepositoryImpl @Inject constructor(
+internal class CharacterRepositoryImpl @Inject constructor(
     private val api: CharacterAPI,
 ) : CharacterRepository {
     private var characterList = emptyList<Character>()

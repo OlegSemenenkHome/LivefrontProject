@@ -1,5 +1,7 @@
 package com.livefront.codechallenge.presentation.detailscreen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.livefront.codechallenge.R
 import com.livefront.codechallenge.presentation.customcomposables.CenteredText
 import com.livefront.codechallenge.presentation.customcomposables.CenteredTextWithButton
@@ -65,14 +69,18 @@ internal fun CharacterDetailScreen(
         ) { paddingValues ->
             when (val currentState = uiState.value) {
                 is CharacterDetailState.Loading -> {
-                    CircularProgressIndicator(
-                        Modifier
-                            .padding(
-                                horizontal = 10.dp,
-                                vertical = 30.dp
-                            )
-                            .size(200.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+
+                    ) {
+                        CircularProgressIndicator(
+                            Modifier.size(200.dp)
+                        )
+                    }
                 }
 
                 is CharacterDetailState.Success -> {
@@ -86,15 +94,41 @@ internal fun CharacterDetailScreen(
                         SubcomposeAsyncImage(
                             model = currentState.character.images.large,
                             contentDescription = stringResource(R.string.image_description) + currentState.character.name,
-                            error = { CenteredText(text = stringResource(id = R.string.load_image_error)) },
-                            modifier = Modifier
-                                .padding(
-                                    horizontal = 10.dp,
-                                    vertical = 30.dp
-                                )
-                                .fillMaxWidth()
-                                .height(350.dp)
-                        )
+                        ) {
+                            when (painter.state) {
+                                is AsyncImagePainter.State.Loading -> {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .padding(
+                                                horizontal = 10.dp,
+                                                vertical = 30.dp
+                                            )
+                                            .fillMaxWidth()
+                                            .height(350.dp)
+                                    ) {
+                                        CircularProgressIndicator(Modifier.size(250.dp))
+                                    }
+                                }
+
+                                is AsyncImagePainter.State.Error -> {
+                                    CenteredText(text = stringResource(id = R.string.load_image_error))
+                                }
+
+                                else -> {
+                                    SubcomposeAsyncImageContent(
+                                        modifier = Modifier
+                                            .padding(
+                                                horizontal = 10.dp,
+                                                vertical = 30.dp
+                                            )
+                                            .fillMaxWidth()
+                                            .height(350.dp)
+                                    )
+                                }
+                            }
+
+                        }
 
                         Text(
                             text = currentState.character.name,

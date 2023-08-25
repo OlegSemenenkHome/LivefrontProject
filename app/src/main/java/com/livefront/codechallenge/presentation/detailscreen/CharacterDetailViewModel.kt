@@ -20,7 +20,7 @@ internal class CharacterDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<CharacterDetailState>(CharacterDetailState.Loading)
     val uiState: StateFlow<CharacterDetailState> = _uiState
 
-    val detailKey: String = checkNotNull(savedStateHandle["detailKey"])
+    private val detailKey: String = checkNotNull(savedStateHandle["detailKey"])
 
     init {
         viewModelScope.launch {
@@ -35,10 +35,14 @@ internal class CharacterDetailViewModel @Inject constructor(
     }
 
     fun retryLoading() {
+        _uiState.value = CharacterDetailState.Loading
         viewModelScope.launch {
             repository.getCharacter(detailKey.toLong())
                 .onSuccess {
                     _uiState.value = CharacterDetailState.Success(it)
+                }
+                .onFailure {
+                    _uiState.value = CharacterDetailState.Error
                 }
         }
     }

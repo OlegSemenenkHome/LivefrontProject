@@ -50,7 +50,6 @@ internal class HomeScreenViewModel @Inject constructor(
             }.onFailure {
                 loadFailure(it)
             }
-
             stopLoading()
         }
     }
@@ -94,7 +93,7 @@ internal class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    fun characterNavigated() {
+    fun clearCharacter() {
         _uiState.update { state ->
             state.copy(character = null)
         }
