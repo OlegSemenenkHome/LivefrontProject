@@ -1,5 +1,9 @@
 package com.livefront.codechallenge.presentation.homescreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +111,11 @@ internal fun HomeScreen(
                             }
                         }
                     })
-                if (active) {
+                AnimatedVisibility(
+                    visible = active,
+                    enter = slideInHorizontally(),
+                    exit = slideOutHorizontally() + fadeOut(),
+                ) {
                     SearchBar(
                         query = viewModel.searchQuery.value,
                         onQueryChange = viewModel::onSearchQueryChanged,
@@ -227,7 +235,6 @@ private fun CharacterCard(
                         .clip(CircleShape)
                 )
             },
-
             headlineContent = {
                 Text(
                     fontSize = 22.sp,

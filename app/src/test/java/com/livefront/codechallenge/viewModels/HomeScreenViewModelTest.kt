@@ -31,12 +31,12 @@ internal class HomeScreenViewModelTest {
         mockkStatic(Log::class)
         every { Log.e(any(), any<String>(), any()) } returns 0
         Dispatchers.setMain(Dispatchers.Unconfined)
+        coEvery { mockRepo.getCharacters() } returns Result.success(characters)
     }
 
     @Test
     fun `We should fetch characters on initialization and be in the correct state`() = runTest {
         // Given
-        coEvery { mockRepo.getCharacters() } returns Result.success(characters)
         viewModel = HomeScreenViewModel(mockRepo)
         val result = viewModel.uiState.value.list
 
@@ -57,7 +57,6 @@ internal class HomeScreenViewModelTest {
 
     @Test
     fun `We should filter the list`() = runTest {
-        coEvery { mockRepo.getCharacters() } returns Result.success(characters)
         viewModel = HomeScreenViewModel(mockRepo)
         viewModel.onSearchQueryChanged("Batman")
 
@@ -100,7 +99,6 @@ internal class HomeScreenViewModelTest {
     @Test
     fun `Need to make sure the query state is cleared`() = runTest {
         // Given
-        coEvery { mockRepo.getCharacters() } returns Result.success(characters)
         viewModel = HomeScreenViewModel(mockRepo)
         viewModel.onSearchQueryChanged("Batman")
 
@@ -120,7 +118,6 @@ internal class HomeScreenViewModelTest {
     @Test
     fun `Should be able to search for a character`() = runTest {
         // Given
-        coEvery { mockRepo.getCharacters() } returns Result.success(characters)
         viewModel = HomeScreenViewModel(mockRepo)
         viewModel.searchForCharacter("Batman")
 

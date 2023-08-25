@@ -36,7 +36,6 @@ internal class HomeScreenViewModel @Inject constructor(
                 loadFailure(it)
                 Log.e(VIEWMODEL_LOGTAG, "Unable to load characters", it)
             }
-
             stopLoading()
         }
     }

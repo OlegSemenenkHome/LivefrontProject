@@ -127,7 +127,6 @@ internal fun CharacterDetailScreen(
                                     )
                                 }
                             }
-
                         }
 
                         Text(

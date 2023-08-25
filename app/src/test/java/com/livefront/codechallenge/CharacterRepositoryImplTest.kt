@@ -31,12 +31,11 @@ internal class CharacterRepositoryImplTest {
     @Test
     fun `getCharacters fetches and stores characters`() = runTest {
         // Given
-        val mockCharacters = characters
-        coEvery { mockApi.getAllCharacters() } returns mockCharacters
+        coEvery { mockApi.getAllCharacters() } returns characters
         val result = repository.getCharacters().getOrNull()
 
         // Then
-        assertEquals(mockCharacters, result)
+        assertEquals(characters, result)
     }
 
     @Test
@@ -52,8 +51,7 @@ internal class CharacterRepositoryImplTest {
     @Test
     fun `getCharacter retrieves character by ID`() = runTest {
         // Given
-        val mockCharacters = characters
-        coEvery { mockApi.getAllCharacters() } returns mockCharacters
+        coEvery { mockApi.getAllCharacters() } returns characters
         repository.getCharacters()  // Ensure characters are loaded
 
         //Then
@@ -64,10 +62,9 @@ internal class CharacterRepositoryImplTest {
     @Test
     fun `getCharacter retrieves character by ID even if cache is empty`() = runTest {
         // Given
-        val mockCharacters = characters
         coEvery { mockApi.getAllCharacters() } returns emptyList()
         repository.getCharacters()  // Ensure characters are loaded
-        coEvery { mockApi.getAllCharacters() } returns mockCharacters
+        coEvery { mockApi.getAllCharacters() } returns characters
 
         //Then
         val batmanResult = repository.getCharacter(2L)
