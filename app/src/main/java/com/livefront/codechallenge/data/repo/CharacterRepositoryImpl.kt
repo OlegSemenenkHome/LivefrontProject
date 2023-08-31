@@ -2,9 +2,6 @@ package com.livefront.codechallenge.data.repo
 
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.CharacterAPI
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /*
@@ -14,24 +11,29 @@ import javax.inject.Inject
  */
 internal class CharacterRepositoryImpl @Inject constructor(
     private val api: CharacterAPI,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CharacterRepository {
     private var characterList = emptyList<Character>()
 
     override suspend fun getCharacters(): Result<List<Character>> {
-        return withContext(dispatcher) {
-            runCatching {
-                if (characterList.isEmpty()) {
-                    characterList = api.getAllCharacters()
-                }
-                characterList
+        return runCatching {
+            if (characterList.isEmpty()) {
+                characterList = api.getAllCharacters()
             }
+            characterList
         }
     }
 
     /*
+     * If the cache is empty we make a call, then we
      * return the character with the Id
      */
-    override fun getCharacter(characterId: Long): Character? =
-        characterList.find { it.id == characterId }
+    override suspend fun getCharacter(characterId: Long): Result<Character> {
+        return runCatching {
+            if (characterList.isEmpty()) {
+                getCharacters()
+            }
+            characterList.find { it.id == characterId }
+                ?: throw Exception("Unable to get Character")
+        }
+    }
 }

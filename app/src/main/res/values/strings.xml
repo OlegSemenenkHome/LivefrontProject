@@ -2,16 +2,24 @@
     <string name="app_name">Livefront Code Challenge</string>
 
     //HomeScreen
-    <string name="character_card_click_label">For more information on</string>
+    <string name="character_card_click_label">For more information on \u0020</string>
     <string name="random_icon">Choose a random character</string>
     <string name="search_icon">Search for a character</string>
     <string name="back_arrow_icon_description">Return back to main screen</string>
     <string name="search_placeholder_text">Look up character</string>
+    <string name="character_image_description">An image of</string>
     <string name="loading_character_text">Loading Characters</string>
     <string name="unable_to_load_text">Unable to load characters, please try again at a later time</string>
 
     //DetailScreen
+    <string name="character_base">Base:\u0020</string>
+    <string name="character_occupation">Occupation:\u0020</string>
+    <string name="character_affiliation">Affiliation:\u0020</string>
     <string name="load_image_error">Unable to load image</string>
     <string name="load_character_error">Unable to load character</string>
     <string name="detail_screen_top_app_bar_title">Character Details</string>
+
+    //Shared
+    <string name="try_again_text">Try Loading Again</string>
+    <string name="image_description">An image of\u0020</string>
 </resources>

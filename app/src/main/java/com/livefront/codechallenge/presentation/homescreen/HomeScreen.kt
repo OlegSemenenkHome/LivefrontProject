@@ -1,5 +1,9 @@
 package com.livefront.codechallenge.presentation.homescreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -48,27 +52,36 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.livefront.codechallenge.R
-import com.livefront.codechallenge.presentation.customcomposables.CenteredText
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_CARD
 import com.livefront.codechallenge.utils.TestTags.CHARACTER_LIST
 import com.livefront.codechallenge.data.Character
 import com.livefront.codechallenge.data.Connections
 import com.livefront.codechallenge.data.Images
 import com.livefront.codechallenge.data.Work
+import com.livefront.codechallenge.presentation.customcomposables.CenteredTextWithButton
 import com.livefront.codechallenge.ui.theme.LivefrontCodeChallengeTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun HomeScreen(navController: NavHostController) {
-    val viewModel = hiltViewModel<HomeScreenViewModel>()
-
+internal fun HomeScreen(
+    navigateToDetailScreen: (Long) -> Unit,
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
     var active by rememberSaveable { mutableStateOf(false) }
-    val isListEmpty = viewModel.characterList.isEmpty()
+
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = uiState.value.character) {
+        uiState.value.character?.id?.let {
+            navigateToDetailScreen(it)
+            viewModel.clearCharacter()
+            active = false
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -81,9 +94,9 @@ internal fun HomeScreen(navController: NavHostController) {
                         Text(stringResource((R.string.app_name)))
                     },
                     actions = {
-                        if (!isListEmpty) {
+                        if (uiState.value.list.isNotEmpty()) {
                             IconButton(
-                                onClick = { navController.navigate(route = "detailView/${viewModel.characterList.random().id}") }
+                                onClick = { navigateToDetailScreen(uiState.value.list.random().id) }
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.dice_6_outline),
@@ -98,16 +111,15 @@ internal fun HomeScreen(navController: NavHostController) {
                             }
                         }
                     })
-                if (active) {
+                AnimatedVisibility(
+                    visible = active,
+                    enter = slideInHorizontally(),
+                    exit = slideOutHorizontally() + fadeOut(),
+                ) {
                     SearchBar(
-                        query = viewModel.searchQuery,
+                        query = viewModel.searchQuery.value,
                         onQueryChange = viewModel::onSearchQueryChanged,
-                        onSearch = {
-                            viewModel.getCharacter(it)?.let { character ->
-                                navController.navigate(route = "detailView/${character.id}")
-                            }
-                            active = false
-                        },
+                        onSearch = viewModel::searchForCharacter,
                         active = true,
                         onActiveChange = { active = it },
                         placeholder = { Text(stringResource(R.string.search_placeholder_text)) },
@@ -120,16 +132,17 @@ internal fun HomeScreen(navController: NavHostController) {
                     )
                     {
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            items(viewModel.filteredCharacters) { character ->
+                            items(viewModel.uiState.value.filteredCharacters) { character ->
                                 ListItem(
                                     headlineContent = { Text(text = character.name) },
                                     modifier = Modifier
                                         .clickable {
-                                            navController.navigate(route = "detailView/${character.id}")
+                                            navigateToDetailScreen(character.id)
                                             active = false
                                             viewModel.clearQuery()
                                         }
@@ -139,45 +152,55 @@ internal fun HomeScreen(navController: NavHostController) {
                         }
                     }
                 }
-            })
+            }
+        )
         { padding ->
-            if (viewModel.loading) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(top = 50.dp)
+            when {
+                uiState.value.isLoading -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
                     ) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier
-                                .width(100.dp)
-                                .height(100.dp)
-                        )
-                        Text(
-                            text = stringResource(id = R.string.loading_character_text),
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(top = 20.dp)
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(top = 50.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(100.dp)
+                            )
+                            Text(
+                                text = stringResource(id = R.string.loading_character_text),
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(top = 20.dp)
+                            )
+                        }
                     }
                 }
-            } else if (isListEmpty) {
-                CenteredText(text = stringResource(R.string.unable_to_load_text))
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    contentPadding = padding,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag(CHARACTER_LIST)
-                ) {
-                    items(viewModel.characterList) { character ->
-                        CharacterCard(character = character, navController)
+
+                uiState.value.hasError -> {
+                    CenteredTextWithButton(
+                        text = stringResource(R.string.unable_to_load_text),
+                        buttonText = stringResource(R.string.try_again_text),
+                        onClick = viewModel::retryLoading
+                    )
+                }
+
+                uiState.value.list.isNotEmpty() -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = padding,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag(CHARACTER_LIST)
+                    ) {
+                        items(uiState.value.list) { character ->
+                            CharacterCard(character = character, navigateToDetailScreen)
+                        }
                     }
                 }
             }
@@ -188,7 +211,7 @@ internal fun HomeScreen(navController: NavHostController) {
 @Composable
 private fun CharacterCard(
     character: Character,
-    navController: NavHostController
+    navigateToDetailScreen: (Long) -> Unit
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(10),
@@ -198,17 +221,12 @@ private fun CharacterCard(
         modifier = Modifier
             .wrapContentHeight()
             .padding(horizontal = 10.dp)
-            .testTag(CHARACTER_CARD)
-            .clickable(
-                onClickLabel = stringResource(id = R.string.character_card_click_label) + " " + character.name,
-                onClick = { navController.navigate(route = "detailView/${character.id}") }
-            )
     ) {
         ListItem(
             leadingContent = {
                 AsyncImage(
-                    model = character.images.sm,
-                    contentDescription = "An image of ${character.name}",
+                    model = character.images.small,
+                    contentDescription = stringResource(R.string.image_description) + character.name,
                     modifier = Modifier
                         .size(100.dp)
                         .padding(
@@ -217,13 +235,18 @@ private fun CharacterCard(
                         .clip(CircleShape)
                 )
             },
-
             headlineContent = {
                 Text(
                     fontSize = 22.sp,
                     text = character.name,
                 )
             },
+            modifier = Modifier
+                .testTag(CHARACTER_CARD)
+                .clickable(
+                    onClickLabel = stringResource(id = R.string.character_card_click_label) + character.name,
+                    onClick = { navigateToDetailScreen(character.id) }
+                )
         )
     }
 }
@@ -238,8 +261,8 @@ private fun CardPreview() {
                 name = "Superman",
                 work = Work(occupation = "", base = ""),
                 connections = Connections(groupAffiliation = "", relatives = ""),
-                images = Images(xs = "", sm = "", md = "", lg = "")
-            ), navController = rememberNavController()
-        )
+                images = Images(extraSmall = "", small = "", medium = "", large = "")
+            )
+        ) {}
     }
 }

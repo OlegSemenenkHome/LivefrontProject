@@ -11,5 +11,5 @@ interface CharacterRepository {
 
     suspend fun getCharacters(): Result<List<Character>>
 
-    fun getCharacter(characterId: Long): Character?
+    suspend fun getCharacter(characterId: Long): Result<Character>
 }

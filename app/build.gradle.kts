@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     debugImplementation(libs.ui.tooling)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     //To help check for leaks commented out since it harms performance
     // debugImplementation (libs.leakcanary.android)
